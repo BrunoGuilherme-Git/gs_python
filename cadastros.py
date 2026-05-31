@@ -1,7 +1,8 @@
 import questionary
 from questionary import Choice
 from datetime import datetime
-from utils import exibir_tabela
+
+from utils import *
 from data import *
 
 def adicionar(lista, item):
@@ -62,16 +63,6 @@ def menu_crud():
         ).ask()
 
         return escolha
-
-def converter(valor, tipo):
-    try:
-        if tipo == int:
-            return int(valor)
-        if tipo == float:
-            return float(valor)
-    except ValueError:
-        return None
-    return valor
 
 def pedir_valor(campo, referencia, opcoes=None):
     if opcoes:

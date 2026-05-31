@@ -27,3 +27,13 @@ def exibir_tabela(lista):
         linha = "| " + " | ".join(formatar_valor(c, item[c]).ljust(larguras[c]) for c in campos) + " |"
         print(linha)
     print(separador)
+
+def converter(valor, tipo):
+    try:
+        if tipo == int:
+            return int(valor)
+        if tipo == float:
+            return float(valor)
+    except ValueError:
+        return None
+    return valor
