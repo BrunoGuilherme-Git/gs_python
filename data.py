@@ -25,13 +25,13 @@ abrigos = [
     {"id": 5, "nome": "UBS Pinheiros",            "endereco": "Rua dos Pinheiros, 410",      "regiao_id": 3,     "capacidade": 100, "ocupacao": 75},
 ]
 
-# id, regiao_id, tipo, data_hora
+# id, regiao_id, tipo, data_hora, finalizado
 reportes = [
-    {"id": 1, "regiao_id": 1, "tipo": "alagamento",    "data_hora": "2024-06-01T14:30:00"},
-    {"id": 2, "regiao_id": 3, "tipo": "alagamento",    "data_hora": "2024-06-01T15:10:00"},
-    {"id": 3, "regiao_id": 2, "tipo": "deslizamento",  "data_hora": "2024-06-02T08:45:00"},
-    {"id": 4, "regiao_id": 5, "tipo": "alagamento",    "data_hora": "2024-06-02T11:00:00"},
-    {"id": 5, "regiao_id": 4, "tipo": "ventos fortes", "data_hora": "2024-06-02T13:20:00"},
+    {"id": 1, "regiao_id": 1, "tipo": "alagamento",    "data_hora": "2024-06-01T14:30:00", "finalizado": False},
+    {"id": 2, "regiao_id": 3, "tipo": "alagamento",    "data_hora": "2024-06-01T15:10:00", "finalizado": False},
+    {"id": 3, "regiao_id": 2, "tipo": "deslizamento",  "data_hora": "2024-06-02T08:45:00", "finalizado": False},
+    {"id": 4, "regiao_id": 5, "tipo": "alagamento",    "data_hora": "2024-06-02T11:00:00", "finalizado": False},
+    {"id": 5, "regiao_id": 4, "tipo": "ventos fortes", "data_hora": "2024-06-02T13:20:00", "finalizado": False},
 ]
 
 tipos_riscos = ["alagamento", "deslizamento", "ventos"]

@@ -4,6 +4,7 @@ import os
 from data import *
 from cadastros import *
 from relatorios import *
+from processos import *
 
 while True:
     escolha = questionary.select(
@@ -29,15 +30,22 @@ while True:
             "reportes": reportes,
         }
         lista = listas[nome_lista]
-        opcoes_regioes = [Choice(title=r["nome"], value=r["id"]) for r in regioes]
-        choices_maps = {
+        opcoes_regioes = [Choice(title=regiao["nome"], value=regiao["id"]) for regiao in regioes]
+        tipo_mapeados = {
             "regioes":  {"risco_predominante": tipos_riscos},
             "reportes": {"tipo": tipos_riscos, "regiao_id": opcoes_regioes},
             "sensores": {"tipo": tipos_riscos, "status": status, "regiao_id": opcoes_regioes},
             "abrigos":  {"regiao_id": opcoes_regioes},
         }
         opcao = menu_crud()
-        executar_cadastro(lista, opcao, choices_maps.get(nome_lista))
+        executar_cadastro(lista, opcao, tipo_mapeados.get(nome_lista))
+
+    elif escolha == 2:
+        opcao = menu_processos()
+        if opcao == 4:
+            continue
+        executar_processo(opcao)
+
 
     elif escolha == 3:
         opcao = menu_relatorios()

@@ -99,8 +99,8 @@ def pedir_valor_opcional(campo, referencia, opcoes=None):
         else:
             return valor
 
-def executar_cadastro(lista, opcao, choices_map=None):
-    choices_map = choices_map or {}
+def executar_cadastro(lista, opcao, tipo_mapeados=None):
+    tipo_mapeados = tipo_mapeados or {}
 
     if opcao == 1:
         listar(lista)
@@ -112,8 +112,10 @@ def executar_cadastro(lista, opcao, choices_map=None):
         for campo in campos:
             if campo == "data_hora":
                 novo_item[campo] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+            elif campo == "finalizado":
+                novo_item[campo] = False
             else:
-                novo_item[campo] = pedir_valor(campo, referencia[campo], choices_map.get(campo))
+                novo_item[campo] = pedir_valor(campo, referencia[campo], tipo_mapeados.get(campo))
         adicionar(lista, novo_item)
 
     elif opcao == 3:
@@ -128,7 +130,7 @@ def executar_cadastro(lista, opcao, choices_map=None):
         campos = [key for key in item_alvo.keys() if key != "id"]
         novos_dados = {}
         for campo in campos:
-            valor = pedir_valor_opcional(campo, item_alvo[campo], choices_map.get(campo))
+            valor = pedir_valor_opcional(campo, item_alvo[campo], tipo_mapeados.get(campo))
             if valor is not None:
                 novos_dados[campo] = valor
         atualizar(lista, id_alvo, novos_dados)
