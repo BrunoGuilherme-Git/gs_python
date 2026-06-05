@@ -41,9 +41,8 @@ def menu_processos():
         "Escolha: ",
         choices=[
             questionary.Choice(title="1. Cálcular risco da região", value=1),
-            questionary.Choice(title="2. Simulador de evento climático", value=2),
-            questionary.Choice(title="3. Finalizar reporte", value=3),
-            questionary.Choice(title="4. Voltar ao menu principal", value=4),
+            questionary.Choice(title="2. Finalizar reporte",         value=3),
+            questionary.Choice(title="3. Voltar ao menu principal",  value=4),
         ]
     ).ask()
     return escolha

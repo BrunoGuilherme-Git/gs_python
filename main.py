@@ -17,9 +17,10 @@ while True:
             Choice(title="1. Cadastros centrais", value=1),
             Choice(title="2. Processos", value=2),
             Choice(title="3. Relatórios", value=3),
-            Choice(title="4. Limpar o terminal", value=4),
-            Choice(title="5. Sobre o projeto", value=5),
-            Choice(title="6. Sair", value=6)
+            Choice(title="4. Simulador de evento climático", value=4),
+            Choice(title="5. Limpar o terminal", value=5),
+            Choice(title="6. Sobre o projeto", value=6),
+            Choice(title="7. Sair", value=7)
         ]
     ).ask()
 
@@ -57,9 +58,12 @@ while True:
         exibir_relatorio(opcao)
 
     elif escolha == 4:
-        os.system('cls' if os.name == 'nt' else 'clear')
+        executar_processo(2)
 
     elif escolha == 5:
+        os.system('cls' if os.name == 'nt' else 'clear')
+
+    elif escolha == 6:
         texto_sobre = (
             "O ChuvaViva é um sistema operacional climático urbano que transforma dados meteorológicos e de sensores IoT "
             "em decisões hiperlocais para enchentes e deslizamentos. A plataforma calcula riscos por bairro e classifica níveis "
@@ -71,6 +75,6 @@ while True:
         criar_painel(texto_sobre, "SOBRE O PROJETO", estilo=PALETA["destaque"])
         console.print()
 
-    elif escolha == 6:
+    elif escolha == 7:
         console.print("\n[bold yellow]Encerrando o programa. Até logo![/bold yellow]\n")
         break
