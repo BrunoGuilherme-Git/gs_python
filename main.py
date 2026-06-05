@@ -1,12 +1,16 @@
 import questionary
+from questionary import Choice
 import os
 
 from data import *
 from cadastros import *
 from relatorios import *
 from processos import *
+from UI import console, render_header, criar_painel, PALETA
 
 while True:
+    render_header("ChuvaViva — Sistema Climático Urbano")
+
     escolha = questionary.select(
         "Escolha uma opção:",
         choices=[
@@ -32,10 +36,10 @@ while True:
         lista = listas[nome_lista]
         opcoes_regioes = [Choice(title=regiao["nome"], value=regiao["id"]) for regiao in regioes]
         tipo_mapeados = {
-            "regioes":  {"risco_predominante": tipos_riscos},
+            "regioes": {"risco_predominante": tipos_riscos},
             "reportes": {"tipo": tipos_riscos, "regiao_id": opcoes_regioes},
             "sensores": {"tipo": tipos_riscos, "status": status, "regiao_id": opcoes_regioes},
-            "abrigos":  {"regiao_id": opcoes_regioes},
+            "abrigos": {"regiao_id": opcoes_regioes},
         }
         opcao = menu_crud()
         executar_cadastro(lista, opcao, tipo_mapeados.get(nome_lista))
@@ -46,23 +50,27 @@ while True:
             continue
         executar_processo(opcao)
 
-
     elif escolha == 3:
         opcao = menu_relatorios()
         if opcao == 5:
             continue
         exibir_relatorio(opcao)
-        
+
     elif escolha == 4:
         os.system('cls' if os.name == 'nt' else 'clear')
 
     elif escolha == 5:
-        print("\nO ChuvaViva é um sistema operacional climático urbano que transforma dados meteorológicos e de sensores IoT")
-        print("em decisões hiperlocais para enchentes e deslizamentos. A plataforma calcula riscos por bairro e classifica níveis ")
-        print("de alerta (baixo, atenção, alto e crítico). Este protótipo em Python simula as funcionalidades centrais: cadastro")
-        print("de sensores, cálculo de risco e simulação de eventos climáticos. O objetivo é demonstrar como dados dispersos podem")
-        print("virar ação concreta, rua por rua. A proposta resume-se em uma frase: cidade que escuta a chuva.\n")
+        texto_sobre = (
+            "O ChuvaViva é um sistema operacional climático urbano que transforma dados meteorológicos e de sensores IoT "
+            "em decisões hiperlocais para enchentes e deslizamentos. A plataforma calcula riscos por bairro e classifica níveis "
+            "de alerta (baixo, atenção, alto e crítico). Este protótipo em Python simula as funcionalidades centrais: cadastro "
+            "de sensores, cálculo de risco e simulação de eventos climáticos. O objetivo é demonstrar como dados dispersos podem "
+            "virar ação concreta, rua por rua. A proposta resume-se em uma frase: cidade que escuta a chuva."
+        )
+        console.print()
+        criar_painel(texto_sobre, "SOBRE O PROJETO", estilo=PALETA["destaque"])
+        console.print()
 
     elif escolha == 6:
-        print("Encerrando o programa.")
+        console.print("\n[bold yellow]Encerrando o programa. Até logo![/bold yellow]\n")
         break
