@@ -3,44 +3,47 @@ from questionary import Choice
 
 from data import *
 from utils import *
+from UI import console, render_header, criar_painel, PALETA
 
-verde    = "\033[32m"
-amarelo  = "\033[33m"
-laranja  = "\033[91m"
-vermelho = "\033[31m"
-reset    = "\033[0m"
-negrito  = "\033[1m"
+verde = "[green]"
+amarelo = "[yellow]"
+laranja = "[orange1]"
+vermelho = "[red]"
+reset = "[/]"
+negrito = "[bold]"
 
 cor_por_nivel = {
-    "BAIXO":   verde,
+    "BAIXO": verde,
     "ATENÇÃO": amarelo,
-    "ALTO":    laranja,
+    "ALTO": laranja,
     "CRÍTICO": vermelho,
 }
 
 intensidades = {
-    "Chuva fraca    (2.5 mm/h)":  2.5,
-    "Chuva moderada (7.5 mm/h)":  7.5,
-    "Chuva forte    (15 mm/h)":  15.0,
-    "Chuva extrema  (25 mm/h)":  25.0,
+    "Chuva fraca    (2.5 mm/h)": 2.5,
+    "Chuva moderada (7.5 mm/h)": 7.5,
+    "Chuva forte    (15 mm/h)": 15.0,
+    "Chuva extrema  (25 mm/h)": 25.0,
 }
 
 params_por_risco = {
-    "alagamento":   {"saturacao": 65, "declividade":  5, "impermeabilizacao": 75},
+    "alagamento": {"saturacao": 65, "declividade": 5, "impermeabilizacao": 75},
     "deslizamento": {"saturacao": 75, "declividade": 35, "impermeabilizacao": 40},
-    "ventos":       {"saturacao": 50, "declividade": 10, "impermeabilizacao": 55},
+    "ventos": {"saturacao": 50, "declividade": 10, "impermeabilizacao": 55},
 }
 params_default = {"saturacao": 60, "declividade": 15, "impermeabilizacao": 60}
 
 
 def menu_processos():
+    render_header("Painel de Processos Climáticos")
+
     escolha = questionary.select(
         "Escolha: ",
         choices=[
-            questionary.Choice(title="1. Cálcular risco da região",     value=1),
+            questionary.Choice(title="1. Cálcular risco da região", value=1),
             questionary.Choice(title="2. Simulador de evento climático", value=2),
-            questionary.Choice(title="3. Finalizar reporte",             value=3),
-            questionary.Choice(title="4. Voltar ao menu principal",      value=4),
+            questionary.Choice(title="3. Finalizar reporte", value=3),
+            questionary.Choice(title="4. Voltar ao menu principal", value=4),
         ]
     ).ask()
     return escolha
@@ -95,16 +98,16 @@ def pontuacao_impermeabilizacao(impermeabilizacao):
 
 
 def calcular_score(chuva, saturacao, declividade, impermeabilizacao):
-    score_chuva             = pontuacao_chuva(chuva)
-    score_saturacao         = pontuacao_saturacao(saturacao)
-    score_declividade       = pontuacao_declividade(declividade)
+    score_chuva = pontuacao_chuva(chuva)
+    score_saturacao = pontuacao_saturacao(saturacao)
+    score_declividade = pontuacao_declividade(declividade)
     score_impermeabilizacao = pontuacao_impermeabilizacao(impermeabilizacao)
 
     score_final = (
-        score_chuva             * 0.35 +
-        score_saturacao         * 0.25 +
-        score_declividade       * 0.25 +
-        score_impermeabilizacao * 0.15
+            score_chuva * 0.35 +
+            score_saturacao * 0.25 +
+            score_declividade * 0.25 +
+            score_impermeabilizacao * 0.15
     )
 
     if score_final > 10:
@@ -150,32 +153,32 @@ def pedir_float(prompt, minimo, maximo):
             numero = float(valor)
             if numero >= minimo and numero <= maximo:
                 return numero
-            print(f"    Valor deve estar entre {minimo} e {maximo}.")
+            console.print(f"[red]Valor deve estar entre {minimo} e {maximo}.[/red]")
         except ValueError:
-            print("    Digite um número válido.")
+            console.print("[red]Digite um número válido.[/red]")
 
 
 def exibir_resultado(regiao, chuva, saturacao, declividade, impermeabilizacao):
-    score_chuva             = pontuacao_chuva(chuva)
-    score_saturacao         = pontuacao_saturacao(saturacao)
-    score_declividade       = pontuacao_declividade(declividade)
+    score_chuva = pontuacao_chuva(chuva)
+    score_saturacao = pontuacao_saturacao(saturacao)
+    score_declividade = pontuacao_declividade(declividade)
     score_impermeabilizacao = pontuacao_impermeabilizacao(impermeabilizacao)
-    score                   = calcular_score(chuva, saturacao, declividade, impermeabilizacao)
-    nivel                   = classificar_nivel(score)
-    cor                     = cor_por_nivel[nivel]
-    acao                    = acao_recomendada(nivel, regiao["id"])
+    score = calcular_score(chuva, saturacao, declividade, impermeabilizacao)
+    nivel = classificar_nivel(score)
+    cor = cor_por_nivel[nivel]
+    acao = acao_recomendada(nivel, regiao["id"])
 
-    print(f"\n{'='*56}")
-    print(f"  ANÁLISE DE RISCO — {regiao['nome'].upper()}")
-    print(f"{'='*56}")
-    print(f"  Chuva acumulada    : {chuva:>7.1f} mm   → {score_chuva}/10  (peso 35%)")
-    print(f"  Saturação do solo  : {saturacao:>7.1f} %    → {score_saturacao}/10  (peso 25%)")
-    print(f"  Declividade        : {declividade:>7.1f} °     → {score_declividade}/10  (peso 25%)")
-    print(f"  Impermeabilização  : {impermeabilizacao:>7.1f} %    → {score_impermeabilizacao}/10  (peso 15%)")
-    print(f"  {'─'*52}")
-    print(f"  {negrito}SCORE FINAL  :{reset} {cor}{negrito} {score:>5.2f}/10   [{nivel}]{reset}")
-    print(f"  {negrito}AÇÃO         :{reset} {cor}{acao}{reset}")
-    print(f"{'='*56}\n")
+    console.print(f"\n[blue]{'=' * 56}[/blue]")
+    console.print(f"  [bold cyan]ANÁLISE DE RISCO — {regiao['nome'].upper()}[/bold cyan]")
+    console.print(f"[blue]{'=' * 56}[/blue]")
+    console.print(f"  Chuva acumulada    : {chuva:>7.1f} mm   → {score_chuva}/10  (peso 35%)")
+    console.print(f"  Saturação do solo  : {saturacao:>7.1f} %    → {score_saturacao}/10  (peso 25%)")
+    console.print(f"  Declividade        : {declividade:>7.1f} °     → {score_declividade}/10  (peso 25%)")
+    console.print(f"  Impermeabilização  : {impermeabilizacao:>7.1f} %    → {score_impermeabilizacao}/10  (peso 15%)")
+    console.print(f"  [blue]{'─' * 52}[/blue]")
+    console.print(f"  {negrito}SCORE FINAL  :{reset} {cor}{negrito} {score:>5.2f}/10   [{nivel}]{reset}")
+    console.print(f"  {negrito}AÇÃO         :{reset} {cor}{acao}{reset}")
+    console.print(f"[blue]{'=' * 56}[/blue]\n")
 
     return score
 
@@ -183,7 +186,7 @@ def exibir_resultado(regiao, chuva, saturacao, declividade, impermeabilizacao):
 def executar_processo(opcao):
     if opcao == 1:
         if not regioes:
-            print("Nenhuma região cadastrada.")
+            console.print("[red]Nenhuma região cadastrada.[/red]")
             return
 
         regiao_id = questionary.select(
@@ -199,10 +202,10 @@ def executar_processo(opcao):
                 regiao_selecionada = regiao
                 break
 
-        print(f"\nInforme os dados climáticos para {regiao_selecionada['nome']}:")
-        chuva             = pedir_float("Chuva acumulada (mm)",  0, 500)
-        saturacao         = pedir_float("Saturação do solo (%)", 0, 100)
-        declividade       = pedir_float("Declividade (graus)",    0,  90)
+        console.print(f"\n[bold cyan]Informe os dados climáticos para {regiao_selecionada['nome']}:[/bold cyan]")
+        chuva = pedir_float("Chuva acumulada (mm)", 0, 500)
+        saturacao = pedir_float("Saturação do solo (%)", 0, 100)
+        declividade = pedir_float("Declividade (graus)", 0, 90)
         impermeabilizacao = pedir_float("Impermeabilização (%)", 0, 100)
 
         score = exibir_resultado(regiao_selecionada, chuva, saturacao, declividade, impermeabilizacao)
@@ -216,13 +219,13 @@ def executar_processo(opcao):
         if intensidade is None:
             return
 
-        duracao     = pedir_float("Duração do evento (horas)", 1, 72)
+        duracao = pedir_float("Duração do evento (horas)", 1, 72)
         chuva_total = intensidade * duracao
 
-        print(f"\n[SIMULAÇÃO] Chuva acumulada: {chuva_total:.1f} mm em {duracao:.0f}h")
-        print(f"{'='*56}")
-        print(f"  {'REGIÃO':<24} {'SCORE':>6}  NÍVEL")
-        print(f"  {'─'*52}")
+        console.print(f"\n[bold yellow][SIMULAÇÃO] Chuva acumulada: {chuva_total:.1f} mm em {duracao:.0f}h[/bold yellow]")
+        console.print(f"[blue]{'=' * 56}[/blue]")
+        console.print(f"  [bold white]{'REGIÃO':<24} {'SCORE':>6}  NÍVEL[/bold white]")
+        console.print(f"  [blue]{'─' * 52}[/blue]")
 
         regioes_em_alerta = []
         for regiao in regioes:
@@ -238,22 +241,22 @@ def executar_processo(opcao):
                 params["impermeabilizacao"],
             )
             nivel = classificar_nivel(score)
-            cor   = cor_por_nivel[nivel]
-            print(f"  {regiao['nome']:<24} {score:>6.2f}  {cor}{nivel}{reset}")
+            cor = cor_por_nivel[nivel]
+            console.print(f"  {regiao['nome']:<24} {score:>6.2f}  {cor}{nivel}{reset}")
 
             if nivel == "ALTO" or nivel == "CRÍTICO":
                 regioes_em_alerta.append(regiao["nome"])
 
-        print(f"{'='*56}")
+        console.print(f"[blue]{'=' * 56}[/blue]")
         if regioes_em_alerta:
             nomes = ", ".join(regioes_em_alerta)
-            print(f"\n  {vermelho}{negrito}Regiões em alerta:{reset} {nomes}\n")
+            console.print(f"\n  {vermelho}{negrito}Regiões em alerta:{reset} {nomes}\n")
         else:
-            print(f"\n  {verde}Nenhuma região entra em alerta para este evento.{reset}\n")
+            console.print(f"\n  {verde}Nenhuma região entra em alerta para este evento.{reset}\n")
 
     elif opcao == 3:
         if not regioes:
-            print("Nenhuma região cadastrada.")
+            console.print("[red]Nenhuma região cadastrada.[/red]")
             return
 
         regiao_id = questionary.select(
@@ -280,7 +283,7 @@ def executar_processo(opcao):
                 reportes_pendentes.append(reporte)
 
         if not reportes_pendentes:
-            print(f"\nTodos os reportes de {nome_regiao} já estão finalizados.")
+            console.print(f"\n[yellow]Todos os reportes de {nome_regiao} já estão finalizados.[/yellow]")
             return
 
         reporte_id = questionary.select(
@@ -295,7 +298,7 @@ def executar_processo(opcao):
                 reporte["finalizado"] = True
                 break
 
-        print(f"\nReporte #{reporte_id} finalizado.")
+        console.print(f"\n[green]Reporte #{reporte_id} finalizado.[/green]")
 
         todos_finalizados = True
         for reporte in reportes_da_regiao:
@@ -312,11 +315,11 @@ def executar_processo(opcao):
             for abrigo in abrigos_da_regiao:
                 abrigo["ocupacao"] = 0
 
-            print(f"Todos os reportes de {nome_regiao} finalizados — ocupação dos abrigos zerada.\n")
+            console.print(f"[green]Todos os reportes de {nome_regiao} finalizados — ocupação dos abrigos zerada.[/green]\n")
             exibir_tabela(abrigos_da_regiao)
         else:
             pendentes_restantes = 0
             for reporte in reportes_da_regiao:
                 if reporte["finalizado"] == False:
                     pendentes_restantes += 1
-            print(f"Ainda há {pendentes_restantes} reporte(s) pendente(s) em {nome_regiao}. Abrigos mantidos.\n")
+            console.print(f"[yellow]Ainda há {pendentes_restantes} reporte(s) pendente(s) em {nome_regiao}. Abrigos mantidos.[/yellow]\n")
