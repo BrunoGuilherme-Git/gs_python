@@ -4,14 +4,11 @@ from rich.panel import Panel
 from rich.table import Table
 from rich.style import Style
 
-logging.basicConfig(
-    filename="chuvaviva.log",
-    level=logging.DEBUG,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S",
-    encoding="utf-8",
-)
 logger = logging.getLogger("chuvaviva")
+logger.setLevel(logging.INFO)
+_handler = logging.FileHandler("chuvaviva.log", encoding="utf-8")
+_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s", datefmt="%Y-%m-%d %H:%M:%S"))
+logger.addHandler(_handler)
 
 console = Console()
 
