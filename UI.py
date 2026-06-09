@@ -1,7 +1,17 @@
+import logging
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
 from rich.style import Style
+
+logging.basicConfig(
+    filename="chuvaviva.log",
+    level=logging.DEBUG,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+    encoding="utf-8",
+)
+logger = logging.getLogger("chuvaviva")
 
 console = Console()
 

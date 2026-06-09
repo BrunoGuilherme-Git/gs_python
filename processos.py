@@ -3,7 +3,7 @@ from questionary import Choice
 
 from data import *
 from utils import *
-from UI import console, render_header, criar_painel, PALETA
+from UI import console, render_header, criar_painel, PALETA, logger
 
 verde = "[green]"
 amarelo = "[yellow]"
@@ -209,6 +209,8 @@ def executar_processo(opcao):
 
         score = exibir_resultado(regiao_selecionada, chuva, saturacao, declividade, impermeabilizacao)
         regiao_selecionada["score"] = score
+        nivel = classificar_nivel(score)
+        logger.info(f"Score calculado — {regiao_selecionada['nome']}: {score} ({nivel})")
 
     elif opcao == 2:
         intensidade = questionary.select(
@@ -297,6 +299,7 @@ def executar_processo(opcao):
                 reporte["finalizado"] = True
                 break
 
+        logger.info(f"Reporte #{reporte_id} finalizado na região '{nome_regiao}'")
         console.print(f"\n[green]Reporte #{reporte_id} finalizado.[/green]")
 
         todos_finalizados = True

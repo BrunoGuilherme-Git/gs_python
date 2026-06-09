@@ -4,17 +4,22 @@ from datetime import datetime
 
 from utils import *
 from data import *
+from UI import logger
 
 def adicionar(lista, item):
     ultimo_id = lista[-1]["id"] if lista else 0
     item["id"] = ultimo_id + 1
     lista.append(item)
+    nome = item.get("nome", item.get("tipo", f"id={item['id']}"))
+    logger.info(f"Item adicionado — {nome} (id={item['id']})")
     return lista
 
 def remover(lista, id):
     for i in lista[:]:
         if i['id'] == id:
+            nome = i.get("nome", i.get("tipo", f"id={i['id']}"))
             lista.remove(i)
+            logger.info(f"Item removido — {nome} (id={id})")
     if lista is regioes:
         for i in sensores[:]:
             if i['regiao_id'] == id:
@@ -25,6 +30,7 @@ def remover(lista, id):
         for i in abrigos[:]:
             if i['regiao_id'] == id:
                 abrigos.remove(i)
+        logger.info(f"Cascata de remoção executada para regiao_id={id} (sensores, abrigos e reportes vinculados)")
     return lista
 
 def atualizar(lista, id, novos_dados):

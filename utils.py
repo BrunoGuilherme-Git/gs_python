@@ -1,12 +1,13 @@
 from datetime import datetime
-from UI import console, criar_painel
+from UI import console, criar_painel, logger
 
 
 def formatar_valor(campo, valor):
     if campo == "data_hora":
         try:
             return datetime.fromisoformat(valor).strftime("%d/%m/%Y %H:%M")
-        except:
+        except ValueError:
+            logger.warning(f"Falha ao formatar data_hora: valor inválido '{valor}'")
             return str(valor)
     return str(valor)
 
